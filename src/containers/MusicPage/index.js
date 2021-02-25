@@ -82,7 +82,7 @@ class MusicPage extends PureComponent {
     const {loading, songToAdd, artistToAdd} = this.state
     
     if(loading) {
-      return <h1>Loading...</h1>
+      return <h1>Loading....</h1>
     }
 
     return (
