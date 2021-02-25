@@ -1,5 +1,7 @@
 import React, {PureComponent} from 'react'
 import {fetchMusicList, sleep} from '../../services/'
+import InputField from '../../components/'
+
 
 class MusicPage extends PureComponent {
   constructor(props) {
@@ -8,8 +10,13 @@ class MusicPage extends PureComponent {
       loading: true,
       musicList: [],
       songToAdd: '',
-      artistToAdd: ''
+      artistToAdd: '',
+      fieldActivity: true
     }
+  }
+
+  toggleActivity = () => {
+    this.setState({fieldActivity: !this.state.fieldActivity})
   }
 
   async componentDidMount() {
@@ -51,7 +58,9 @@ class MusicPage extends PureComponent {
     newList.splice(songIndex, 1)
     this.setState({
       musicList:  newList,
-      selected: null
+      selected: null,
+      songToAdd: '',
+      artistToAdd: ''
     })
   }
 
@@ -64,7 +73,7 @@ class MusicPage extends PureComponent {
       return (
       <div onClick={this.selectItem(song)} key={`song_${song.id}`} style={{marginTop: '20px', cursor: 'pointer', background: this.state.selected === song.id ? 'red' : 'black', borderWidth: 1, border: '1px solid black', flex: 1, alignItems: 'center', justifyContent: 'center', width: '100px'}}>
         <p style={{textAlign: 'center', fontSize: 20, fontWeight: 'bold', color:'lightblue'}}>{song.title}</p>
-        <p style={{textAlign: 'center', fontSize: 10, color: 'green'}}>{song.vocals}</p>
+        <p style={{textAlign: 'center', fontSize: 13, color: 'green'}}>{song.vocals}</p>
       </div>)
     })
   }
@@ -83,8 +92,10 @@ class MusicPage extends PureComponent {
         <div style={{flex: 1, marginTop: '20px', flexDirection: 'column'}}>
           <input value={songToAdd} placeholder='Song Name' onChange={this.handleInputChange('songToAdd')} />
           <input value={artistToAdd} placeholder='Artist Name' onChange={this.handleInputChange('artistToAdd')}/>
-          <button onClick={this.state.selected ? this.updateSong : this.createNewSong}>{this.state.selected ? 'Edit' : 'Add new'}  song</button>
+          <button disabled={songToAdd === "" || artistToAdd === ""} onClick={this.state.selected ? this.updateSong : this.createNewSong}>{this.state.selected ? 'Edit' : 'Add new'}  song</button>
           <button onClick={this.state.selected ? this.deleteSong : null}>Delete song</button>
+
+          <InputField toggleActivity={this.toggleActivity} fieldActivity={this.state.fieldActivity}/>
         </div>
       </div>
     )
