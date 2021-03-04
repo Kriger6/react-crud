@@ -11,7 +11,8 @@ class MusicPage extends PureComponent {
       musicList: [],
       songToAdd: '',
       artistToAdd: '',
-      fieldActivity: true
+      fieldActivity: true,
+      selected: []
     }
   }
 
@@ -34,9 +35,10 @@ class MusicPage extends PureComponent {
     })
   }
 
-  selectItem = song  => event => {
+  selectItem = song  => prevState => {
+    const selection = [...this.state.selected, song.id]
     this.setState({
-      selected: song.id,
+      selected: selection,
       songToAdd: song.title,
       artistToAdd: song.vocals
     })
@@ -45,7 +47,7 @@ class MusicPage extends PureComponent {
   unselectItem = () => this.setState({selected: null})
 
   updateSong = () => {
-    const songIndex = this.state.musicList.map(song => song.id).indexOf(this.state.selected)
+    const songIndex = this.state.musicList.map(song => song.id).indexOf(...this.state.selected)
     let newList = [...this.state.musicList]
     newList[songIndex] = {vocals: this.state.artistToAdd, title: this.state.songToAdd, id: this.state.selected}
 
@@ -53,12 +55,22 @@ class MusicPage extends PureComponent {
   }
   
   deleteSong = () => {
-    const songIndex = this.state.musicList.map(song => song.id).indexOf(this.state.selected)
-    const newList = [...this.state.musicList] 
-    newList.splice(songIndex, 1)
+    if (this.state.selected.length === 0) return
+    var songIndex = []
+    const newList = [...this.state.musicList]
+    for (let i = 0; i <this.state.musicList.length; i++) {
+      if (this.state.selected.includes(this.state.musicList[i].id)) {
+        songIndex.push(i)
+      }
+    }
+    if (songIndex !== -1) {
+      for (let i = songIndex.length -1; i >= 0; i--) {
+        newList.splice(songIndex[i], 1)
+      }
+    }  
     this.setState({
       musicList:  newList,
-      selected: null,
+      selected: '',
       songToAdd: '',
       artistToAdd: ''
     })
@@ -71,7 +83,7 @@ class MusicPage extends PureComponent {
   renderMusicList = () => {
     return this.state.musicList.map(song => {
       return (
-      <div onClick={this.selectItem(song)} key={`song_${song.id}`} style={{marginTop: '20px', cursor: 'pointer', background: this.state.selected === song.id ? 'red' : 'black', borderWidth: 1, border: '1px solid black', flex: 1, alignItems: 'center', justifyContent: 'center', width: '100px'}}>
+      <div onClick={this.selectItem(song)} key={`song_${song.id}`} style={{marginTop: '20px', cursor: 'pointer', background: this.state.selected.includes(song.id) ? 'red' : 'black', borderWidth: 1, border: '1px solid black', flex: 1, alignItems: 'center', justifyContent: 'center', width: '100px'}}>
         <p style={{textAlign: 'center', fontSize: 20, fontWeight: 'bold', color:'lightblue'}}>{song.title}</p>
         <p style={{textAlign: 'center', fontSize: 13, color: 'green'}}>{song.vocals}</p>
       </div>)
@@ -82,7 +94,7 @@ class MusicPage extends PureComponent {
     const {loading, songToAdd, artistToAdd} = this.state
     
     if(loading) {
-      return <h1>Loading....</h1>
+      return <h1>Loading...</h1>
     }
 
     return (
