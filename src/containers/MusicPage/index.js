@@ -44,14 +44,15 @@ class MusicPage extends PureComponent {
     })
   }
 
-  unselectItem = () => this.setState({selected: null})
+  unselectItem = () => this.setState({selected: []})
 
   updateSong = () => {
+    if (this.state.selected.length > 1) return
     const songIndex = this.state.musicList.map(song => song.id).indexOf(...this.state.selected)
     let newList = [...this.state.musicList]
     newList[songIndex] = {vocals: this.state.artistToAdd, title: this.state.songToAdd, id: this.state.selected}
 
-    this.setState({musicList: newList, selected: null})
+    this.setState({musicList: newList, selected: []})
   }
   
   deleteSong = () => {
@@ -104,7 +105,7 @@ class MusicPage extends PureComponent {
         <div style={{flex: 1, marginTop: '20px', flexDirection: 'column'}}>
           <input value={songToAdd} placeholder='Song Name' onChange={this.handleInputChange('songToAdd')} />
           <input value={artistToAdd} placeholder='Artist Name' onChange={this.handleInputChange('artistToAdd')}/>
-          <button disabled={songToAdd === "" || artistToAdd === ""} onClick={this.state.selected ? this.updateSong : this.createNewSong}>{this.state.selected ? 'Edit' : 'Add new'}  song</button>
+          <button disabled={songToAdd === "" || artistToAdd === ""} onClick={this.state.selected.length !== 0 ? this.updateSong : this.createNewSong}>{this.state.selected.length !== 0 ? 'Edit' : 'Add new'}  song</button>
           <button onClick={this.state.selected ? this.deleteSong : null}>Delete song</button>
 
           <InputField toggleActivity={this.toggleActivity} fieldActivity={this.state.fieldActivity}/>
