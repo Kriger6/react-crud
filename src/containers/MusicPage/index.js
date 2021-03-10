@@ -36,6 +36,19 @@ class MusicPage extends PureComponent {
   }
 
   selectItem = song  => prevState => {
+    if (this.state.selected.includes(song.id)) {
+      console.log(song.id);
+      const songIndex = this.state.selected.indexOf(song.id)
+      // console.log(songIndex);
+      const newSelected = this.state.selected
+      newSelected.splice(songIndex, 1)
+      console.log(newSelected);
+      this.setState({
+        selected: [...newSelected]
+      })
+      return
+    }
+    console.log("kobas");
     const selection = [...this.state.selected, song.id]
     this.setState({
       selected: selection,
