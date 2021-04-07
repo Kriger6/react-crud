@@ -1,7 +1,10 @@
 import React, {PureComponent} from 'react'
 import {fetchMusicList, sleep} from '../../services/'
 import InputField from '../../components/'
-
+import Button from 'react-bootstrap/Button'
+import Container from 'react-bootstrap/Container'
+import { Navbar } from 'react-bootstrap'
+import Spinner from 'react-bootstrap/Spinner'
 
 class MusicPage extends PureComponent {
   constructor(props) {
@@ -21,7 +24,7 @@ class MusicPage extends PureComponent {
   }
 
   async componentDidMount() {
-      await sleep(1500)
+      await sleep(11500)
       const data = fetchMusicList()
       this.setState({musicList: data, loading: false})
   }
@@ -37,18 +40,14 @@ class MusicPage extends PureComponent {
 
   selectItem = song  => prevState => {
     if (this.state.selected.includes(song.id)) {
-      console.log(song.id);
       const songIndex = this.state.selected.indexOf(song.id)
-      // console.log(songIndex);
       const newSelected = this.state.selected
       newSelected.splice(songIndex, 1)
-      console.log(newSelected);
       this.setState({
         selected: [...newSelected]
       })
       return
     }
-    console.log("kobas");
     const selection = [...this.state.selected, song.id]
     this.setState({
       selected: selection,
@@ -97,9 +96,9 @@ class MusicPage extends PureComponent {
   renderMusicList = () => {
     return this.state.musicList.map(song => {
       return (
-      <div onClick={this.selectItem(song)} key={`song_${song.id}`} style={{marginTop: '20px', cursor: 'pointer', background: this.state.selected.includes(song.id) ? 'red' : 'black', borderWidth: 1, border: '1px solid black', flex: 1, alignItems: 'center', justifyContent: 'center', width: '100px'}}>
-        <p style={{textAlign: 'center', fontSize: 20, fontWeight: 'bold', color:'lightblue'}}>{song.title}</p>
-        <p style={{textAlign: 'center', fontSize: 13, color: 'green'}}>{song.vocals}</p>
+      <div className="music-list border-primary" onClick={this.selectItem(song)} key={`song_${song.id}`} style={{marginTop: '20px', cursor: 'pointer', background: this.state.selected.includes(song.id) ? 'red' : 'lightgrey'}}>
+        <p style={{textAlign: 'center', fontSize: 20, fontWeight: 'bold', color:'white'}}>{song.title}</p>
+        <p style={{textAlign: 'center', fontSize: 13, color: 'green'}}>{song.vocals}</p>  
       </div>)
     })
   }
@@ -108,21 +107,43 @@ class MusicPage extends PureComponent {
     const {loading, songToAdd, artistToAdd} = this.state
     
     if(loading) {
-      return <h1>Loading...</h1>
+        return( 
+      <div className="d-flex flex-row align-items-center" style={{ background: "#007bff", height: "100vh"}}>
+        <Container className=" d-flex loading h-25 p-2 bg-light rounded" style={{width: "350px"}}>
+          <div className="d-flex flex-column justify-content-center align-items-center w-100">
+            <h1 className="mb-4">Loading...</h1>
+            <Spinner animation="border" role="status">
+            <span className="sr-only">Loading...</span>
+            </Spinner>
+          </div>
+        </Container>
+      </div>
+      )
     }
 
     return (
       <div style={{display: 'flex',flexDirection:'column', justifyContent:'center', alignItems: 'center'}}>
-        <h1 onClick={this.unselectItem}>Hello from Music Page</h1>
-        {this.renderMusicList()}
-        <div style={{flex: 1, marginTop: '20px', flexDirection: 'column'}}>
-          <input value={songToAdd} placeholder='Song Name' onChange={this.handleInputChange('songToAdd')} />
-          <input value={artistToAdd} placeholder='Artist Name' onChange={this.handleInputChange('artistToAdd')}/>
-          <button disabled={songToAdd === "" || artistToAdd === ""} onClick={this.state.selected.length !== 0 ? this.updateSong : this.createNewSong}>{this.state.selected.length !== 0 ? 'Edit' : 'Add new'}  song</button>
-          <button onClick={this.state.selected ? this.deleteSong : null}>Delete song</button>
+        <Container className="p-0" fluid >
+          <Navbar className="nav" bg="primary">
+            <h1 className="font-weight-light font-size-12" onClick={this.unselectItem}>Hello from Music Page</h1>
+          </Navbar>
+        </Container>
+        <Container className="bg-light pb-5" fluid>
+          <div style={{flex: 1, marginTop: '20px', flexDirection: 'column'}}>
+            <input style={{marginRight: "10px"}} value={songToAdd} placeholder='Song Name' onChange={this.handleInputChange('songToAdd')} />
+            <input style={{marginRight: "10px"}} value={artistToAdd} placeholder='Artist Name' onChange={this.handleInputChange('artistToAdd')}/>
+            <Button className="mr-2" disabled={songToAdd === "" || artistToAdd === ""} onClick={this.state.selected.length !== 0 ? this.updateSong : this.createNewSong}>{this.state.selected.length !== 0 ? 'Edit' : 'Add new'}  song</Button>
+            <Button onClick={this.state.selected ? this.deleteSong : null}>Delete song</Button>
 
-          <InputField toggleActivity={this.toggleActivity} fieldActivity={this.state.fieldActivity}/>
-        </div>
+            <InputField toggleActivity={this.toggleActivity} fieldActivity={this.state.fieldActivity}/>
+          </div>
+          <Container className="list">
+            {this.renderMusicList()}
+          </Container>
+        </Container>
+        <Container>
+          <footer></footer>
+        </Container>
       </div>
     )
   }
