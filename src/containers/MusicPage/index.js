@@ -24,7 +24,7 @@ class MusicPage extends PureComponent {
   }
 
   async componentDidMount() {
-      await sleep(11500)
+      await sleep(1500)
       const data = fetchMusicList()
       this.setState({musicList: data, loading: false})
   }
@@ -96,8 +96,8 @@ class MusicPage extends PureComponent {
   renderMusicList = () => {
     return this.state.musicList.map(song => {
       return (
-      <div className="music-list border-primary" onClick={this.selectItem(song)} key={`song_${song.id}`} style={{marginTop: '20px', cursor: 'pointer', background: this.state.selected.includes(song.id) ? 'red' : 'lightgrey'}}>
-        <p style={{textAlign: 'center', fontSize: 20, fontWeight: 'bold', color:'white'}}>{song.title}</p>
+        <div className="music-list border-primary" onClick={this.selectItem(song)} key={`song_${song.id}`} style={{ marginTop: '20px', cursor: 'pointer', background: this.state.selected.includes(song.id) ? 'linear-gradient(-65deg, lightgreen, lightblue)' : 'lightgrey'}}>
+        <p className="mt-2" style={{textAlign: 'center', fontSize: 20, fontWeight: 'bold', color:'white'}}>{song.title}</p>
         <p style={{textAlign: 'center', fontSize: 13, color: 'green'}}>{song.vocals}</p>  
       </div>)
     })
@@ -109,7 +109,7 @@ class MusicPage extends PureComponent {
     if(loading) {
         return( 
       <div className="d-flex flex-row align-items-center" style={{ background: "#007bff", height: "100vh"}}>
-        <Container className=" d-flex loading h-25 p-2 bg-light rounded" style={{width: "350px"}}>
+        <Container className="shadow-lg d-flex loading h-25 p-2 bg-light rounded" style={{width: "350px"}}>
           <div className="d-flex flex-column justify-content-center align-items-center w-100">
             <h1 className="mb-4">Loading...</h1>
             <Spinner animation="border" role="status">
@@ -122,13 +122,13 @@ class MusicPage extends PureComponent {
     }
 
     return (
-      <div style={{display: 'flex',flexDirection:'column', justifyContent:'center', alignItems: 'center'}}>
+      <div clasName="" style={{display: 'flex',flexDirection:'column', justifyContent:'center', alignItems: 'center'}}>
         <Container className="p-0" fluid >
           <Navbar className="nav" bg="primary">
             <h1 className="font-weight-light font-size-12" onClick={this.unselectItem}>Hello from Music Page</h1>
           </Navbar>
         </Container>
-        <Container className="bg-light pb-5" fluid>
+        <Container className="bg-light pb-5 vh-100" fluid>
           <div style={{flex: 1, marginTop: '20px', flexDirection: 'column'}}>
             <input style={{marginRight: "10px"}} value={songToAdd} placeholder='Song Name' onChange={this.handleInputChange('songToAdd')} />
             <input style={{marginRight: "10px"}} value={artistToAdd} placeholder='Artist Name' onChange={this.handleInputChange('artistToAdd')}/>
