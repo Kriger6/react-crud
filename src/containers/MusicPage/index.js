@@ -96,7 +96,7 @@ class MusicPage extends PureComponent {
   renderMusicList = () => {
     return this.state.musicList.map(song => {
       return (
-        <div className="music-list border-primary" onClick={this.selectItem(song)} key={`song_${song.id}`} style={{ marginTop: '20px', cursor: 'pointer', background: this.state.selected.includes(song.id) ? 'linear-gradient(-65deg, lightgreen, lightblue)' : 'lightgrey'}}>
+        <div className="music-list border-primary rounded-left" onClick={this.selectItem(song)} key={`song_${song.id}`} style={{ marginTop: '20px', cursor: 'pointer', background: this.state.selected.includes(song.id) ? 'linear-gradient(-65deg, lightgreen, lightblue)' : 'lightgrey'}}>
         <p className="mt-2" style={{textAlign: 'center', fontSize: 20, fontWeight: 'bold', color:'white'}}>{song.title}</p>
         <p style={{textAlign: 'center', fontSize: 13, color: 'green'}}>{song.vocals}</p>  
       </div>)
@@ -122,27 +122,25 @@ class MusicPage extends PureComponent {
     }
 
     return (
-      <div clasName="" style={{display: 'flex',flexDirection:'column', justifyContent:'center', alignItems: 'center'}}>
+      <div id="body" style={{display: 'flex',flexDirection:'column', justifyContent:'center', alignItems: 'center', height:'100%'}}>
         <Container className="p-0" fluid >
-          <Navbar className="nav" bg="primary">
+          <Navbar className="flex-container nav" bg="primary">
             <h1 className="font-weight-light font-size-12" onClick={this.unselectItem}>Hello from Music Page</h1>
+            <InputField toggleActivity={this.toggleActivity} fieldActivity={this.state.fieldActivity} />
           </Navbar>
         </Container>
-        <Container className="bg-light pb-5 vh-100" fluid>
-          <div style={{flex: 1, marginTop: '20px', flexDirection: 'column'}}>
+        <Container className="main bg-light" fluid>
+          <div style={{display:'flex', marginTop: '20px', flexDirection: 'row'}}>
             <input style={{marginRight: "10px"}} value={songToAdd} placeholder='Song Name' onChange={this.handleInputChange('songToAdd')} />
             <input style={{marginRight: "10px"}} value={artistToAdd} placeholder='Artist Name' onChange={this.handleInputChange('artistToAdd')}/>
             <Button className="mr-2" disabled={songToAdd === "" || artistToAdd === ""} onClick={this.state.selected.length !== 0 ? this.updateSong : this.createNewSong}>{this.state.selected.length !== 0 ? 'Edit' : 'Add new'}  song</Button>
             <Button onClick={this.state.selected ? this.deleteSong : null}>Delete song</Button>
 
-            <InputField toggleActivity={this.toggleActivity} fieldActivity={this.state.fieldActivity}/>
+            
           </div>
-          <Container className="list">
+          <Container className="list mt-3">
             {this.renderMusicList()}
           </Container>
-        </Container>
-        <Container>
-          <footer></footer>
         </Container>
       </div>
     )
